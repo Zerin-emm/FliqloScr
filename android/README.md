@@ -45,8 +45,9 @@ export ANDROID_HOME="D:\Android\Sdk"
 ./gradlew assembleRelease
 ```
 
-产物是发行版（release）。自用 App，`build.gradle` 里 release 直接复用 debug 签名，
-不需要另外生成 keystore。
+产物是发行版（release）。签名用仓库自带的 `android/fliqlo.keystore`（配置在
+`app/build.gradle` 的 `signingConfigs`），任何机器构建出的包签名一致，可互相覆盖安装，
+不需要额外生成或配置 keystore。
 
 **Android Studio**：`File → Open` 选 `android/` 目录。`local.properties` 里已经写好
 `sdk.dir=D:\Android\Sdk`，打开就能同步，不会再弹下载 SDK 的向导。
