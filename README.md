@@ -13,7 +13,7 @@
 | 平台 | 产物 | 构建方式 | 说明 |
 |---|---|---|---|
 | Windows | `windows/Output/Fliqlo-Setup-*.exe` | Inno Setup 编译 `windows/Fliqlo.iss` | [windows/README.md](windows/README.md) |
-| Android | `app-debug.apk`（约 0.9 MB） | Gradle / Android Studio | [android/README.md](android/README.md) |
+| Android | `Fliqlo-release.apk`（约 0.65 MB） | Gradle / Android Studio | [android/README.md](android/README.md) |
 
 两个平台共用同一份页面 `web/fliqlo.html`，差别只在打包方式：Windows 用浏览器打开它，
 Android 把它打进 APK 的 assets 交给 WebView 加载。所以**改页面只需要改一个文件**。
@@ -105,6 +105,23 @@ FliqloScr/
 
 存储位置是浏览器的 `localStorage`，按页面来源隔离（`file://` 与 `http://localhost` 是两套）。
 和原版 `.scr` 用的 `%LOCALAPPDATA%\Fliqlo\webview-storage.json` **互不相通**。
+
+## 发布（GitHub Release）
+
+两个平台的产物都构建好后，在仓库的 **Releases → Draft a new release** 里新建一个版本，
+把两个文件一起拖进去发布：
+
+| 文件 | 构建命令 | 产物 |
+|---|---|---|
+| Android | `cd android && ./gradlew assembleRelease` | `Fliqlo-release.apk` |
+| Windows | `& "D:\Inno Setup 6.6.1\ISCC.exe" windows\Fliqlo.iss` | `windows/Output/Fliqlo-Setup-*.exe` |
+
+两个平台的版本号各自独立（Android 在 `android/app/build.gradle` 的 `versionName`，
+Windows 在 `Fliqlo.iss` 的 `MyAppVersion`），发版时按需各自递增。
+
+Android 的签名密钥随仓库分发（`android/fliqlo.keystore`），任何机器构建出的包
+签名一致，可以互相覆盖安装。密钥与密码公开对自用侧载场景没有实际风险——
+前提是只从自己的 Release 页下载 APK。
 
 ## 注意
 

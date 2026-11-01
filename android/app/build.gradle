@@ -6,6 +6,11 @@ android {
     namespace 'com.fliqlo.clock'
     compileSdk 36
 
+    // APK 文件名（产物为 Fliqlo-debug.apk / Fliqlo-release.apk）
+    base {
+        archivesName = 'Fliqlo'
+    }
+
     defaultConfig {
         applicationId 'com.fliqlo.clock'
         minSdk 24
@@ -14,11 +19,23 @@ android {
         versionName '1.0'
     }
 
+    // 签名密钥随仓库分发（android/fliqlo.keystore）。
+    // 这是自用侧载 App：密钥入库让任何机器 / CI 构建出的包签名一致，
+    // 才能覆盖更新。密钥与密码公开的风险是他人可签出同签名更新包——
+    // 只要只从自己的 Release 页下载 APK，该风险不成立。
+    signingConfigs {
+        release {
+            storeFile rootProject.file('fliqlo.keystore')
+            storePassword 'android'
+            keyAlias 'androiddebugkey'
+            keyPassword 'android'
+        }
+    }
+
     buildTypes {
         release {
             minifyEnabled false
-            // 自己用的 App：release 直接复用 debug 签名，省得再生成 keystore
-            signingConfig signingConfigs.debug
+            signingConfig signingConfigs.release
         }
     }
 

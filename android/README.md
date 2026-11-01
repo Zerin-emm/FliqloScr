@@ -1,4 +1,4 @@
-# 翻页时钟 · Android 版
+# Fliqlo · Android 版
 
 [**Windows**](/windows/README.md) | [**总览**](/README.md) | Android
 
@@ -19,17 +19,17 @@
 | Android SDK | `D:\Android\Sdk`（platform-tools 37.0.1 / platforms;android-36 / build-tools;36.0.0） |
 | Gradle / AGP | 9.8.2 / 9.5.0 |
 | compileSdk / targetSdk / minSdk | 36 / 36 / 24 |
-| 产物 | `app/build/outputs/apk/debug/app-debug.apk`（约 0.9 MB） |
+| 产物 | `app/build/outputs/apk/release/Fliqlo-release.apk`（约 0.65 MB，发行版） |
 
 ## 使用
 
 装到手机（手机插 USB、开 USB 调试）：
 
 ```bash
-"D:\Android\Sdk\platform-tools\adb.exe" install -r app\build\outputs\apk\debug\app-debug.apk
+"D:\Android\Sdk\platform-tools\adb.exe" install -r app\build\outputs\apk\release\Fliqlo-release.apk
 ```
 
-或者把 `app-debug.apk` 拷到手机点开安装，允许一次「未知来源」即可。
+或者把 `Fliqlo-release.apk` 拷到手机点开安装，允许一次「未知来源」即可。
 
 打开后就是全屏时钟：常亮不休眠、随手机自动横竖屏，按返回键不会退出（躺着看时不易误触），
 要离开按 Home 键。
@@ -42,8 +42,11 @@
 cd android
 export JAVA_HOME="D:\Android Studio\jbr"
 export ANDROID_HOME="D:\Android\Sdk"
-./gradlew assembleDebug
+./gradlew assembleRelease
 ```
+
+产物是发行版（release）。自用 App，`build.gradle` 里 release 直接复用 debug 签名，
+不需要另外生成 keystore。
 
 **Android Studio**：`File → Open` 选 `android/` 目录。`local.properties` 里已经写好
 `sdk.dir=D:\Android\Sdk`，打开就能同步，不会再弹下载 SDK 的向导。
