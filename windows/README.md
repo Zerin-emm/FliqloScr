@@ -13,7 +13,7 @@ Windows | [**总览**](/README.md) | [**Android**](/android/README.md)
 | 项目 | 版本 / 位置 |
 |---|---|
 | 安装包脚本 | `windows/Fliqlo.iss`（Inno Setup 6.6.1） |
-| 产物 | `windows/Output/Fliqlo-Setup-1.6.1.exe`（约 2.3 MB） |
+| 产物 | `windows/Output/Fliqlo-Setup-1.0.exe`（约 2.3 MB） |
 | 安装位置 | `%LOCALAPPDATA%\Programs\Fliqlo`（每用户安装，不需要管理员） |
 | 运行时依赖 | 无，只需要一个浏览器 |
 
@@ -39,7 +39,7 @@ Windows | [**总览**](/README.md) | [**Android**](/android/README.md)
 & "D:\Inno Setup 6.6.1\ISCC.exe" windows\Fliqlo.iss
 ```
 
-- 产物：`windows\Output\Fliqlo-Setup-1.6.1.exe`
+- 产物：`windows\Output\Fliqlo-Setup-1.0.exe`
 - 快捷方式：桌面 / 开始菜单，名称 **Fliqlo**，图标 `Fliqlo.ico`（安装向导里「创建桌面快捷方式」默认勾选）
 - 卸载：删除安装目录和快捷方式；浏览器 localStorage 里的设置不会动
 

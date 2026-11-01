@@ -2,12 +2,12 @@
 ;  Fliqlo 网页版 Inno Setup 安装脚本
 ;  编译： "D:\Inno Setup 6.6.1\ISCC.exe" windows\Fliqlo.iss
 ;  前置： 无构建步骤，直接打包 ..\web\fliqlo.html 与 ..\Fliqlo.ico
-;  产物： windows\Output\Fliqlo-Setup-1.6.1.exe
+;  产物： windows\Output\Fliqlo-Setup-1.0.exe
 ;  卸载： 删除安装目录（网页与图标）和快捷方式；浏览器 localStorage 里的设置不触碰
 ; ============================================================================================
 
 #define MyAppName "Fliqlo"
-#define MyAppVersion "1.6.1"
+#define MyAppVersion "1.0"
 #define MyAppPublisher "9031"
 #define MyAppUrl "https://fliqlo.com/"
 #define MyAppFileName "fliqlo.html"
