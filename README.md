@@ -106,23 +106,6 @@ FliqloScr/
 存储位置是浏览器的 `localStorage`，按页面来源隔离（`file://` 与 `http://localhost` 是两套）。
 和原版 `.scr` 用的 `%LOCALAPPDATA%\Fliqlo\webview-storage.json` **互不相通**。
 
-## 发布（GitHub Release）
-
-两个平台的产物都构建好后，在仓库的 **Releases → Draft a new release** 里新建一个版本，
-把两个文件一起拖进去发布：
-
-| 文件 | 构建命令 | 产物 |
-|---|---|---|
-| Android | `cd android && ./gradlew assembleRelease` | `Fliqlo-release.apk` |
-| Windows | `& "D:\Inno Setup 6.6.1\ISCC.exe" windows\Fliqlo.iss` | `windows/Output/Fliqlo-Setup-*.exe` |
-
-两个平台的版本号各自独立（Android 在 `android/app/build.gradle` 的 `versionName`，
-Windows 在 `Fliqlo.iss` 的 `MyAppVersion`），发版时按需各自递增。
-
-Android 的签名密钥随仓库分发（`android/fliqlo.keystore`），任何机器构建出的包
-签名一致，可以互相覆盖安装。密钥与密码公开对自用侧载场景没有实际风险——
-前提是只从自己的 Release 页下载 APK。
-
 ## 注意
 
 - 网页无法阻止系统按电源计划关闭显示器或进入睡眠；要常亮请把“关闭屏幕/睡眠”设为“从不”
