@@ -1,0 +1,34 @@
+plugins {
+    id 'com.android.application'
+}
+
+android {
+    namespace 'com.fliqlo.clock'
+    compileSdk 36
+
+    defaultConfig {
+        applicationId 'com.fliqlo.clock'
+        minSdk 24
+        targetSdk 36
+        versionCode 1
+        versionName '1.0'
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            // 自己用的 App：release 直接复用 debug 签名，省得再生成 keystore
+            signingConfig signingConfigs.debug
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    // 页面是单文件、无外部请求，不需要任何依赖
+}
+
+dependencies {
+}

@@ -1,8 +1,8 @@
 ﻿; ============================================================================================
 ;  Fliqlo 网页版 Inno Setup 安装脚本
-;  编译： "D:\Inno Setup 6.6.1\ISCC.exe" installer\Fliqlo.iss
-;  前置： 无构建步骤，直接打包 Web 目录下的 fliqlo.html 与 Fliqlo.ico
-;  产物： installer\Output\Fliqlo-Setup-1.6.1.exe
+;  编译： "D:\Inno Setup 6.6.1\ISCC.exe" windows\Fliqlo.iss
+;  前置： 无构建步骤，直接打包 ..\web\fliqlo.html 与 ..\Fliqlo.ico
+;  产物： windows\Output\Fliqlo-Setup-1.6.1.exe
 ;  卸载： 删除安装目录（网页与图标）和快捷方式；浏览器 localStorage 里的设置不触碰
 ; ============================================================================================
 
@@ -44,7 +44,7 @@ Name: "chinese"; MessagesFile: "compiler:Languages\Chinese.isl"
 Name: "desktopicon"; Description: "创建桌面快捷方式"; GroupDescription: "附加任务："
 
 [Files]
-Source: "..\{#MyAppFileName}"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\web\{#MyAppFileName}"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\{#MyAppIconName}"; DestDir: "{app}"; Flags: ignoreversion
 
 [Icons]

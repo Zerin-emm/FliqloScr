@@ -1,18 +1,62 @@
-# Fliqlo 网页版（浏览器全屏时钟）
+# Fliqlo 网页版
+
+[**Windows**](/windows/README.md) | **总览** | [**Android**](/android/README.md)
+
 
 从 **Fliqlo 1.6.1 for Windows** 的 `Fliqlo.scr` 里提取的翻页时钟页面，并补上了显秒和设置栏。
-双击用浏览器打开、按 F11 全屏，就可以长期当屏保用——**鼠标怎么动都不会退出**，这是它和原版 `.scr` 最大的区别。
+一份页面，两种形态：Windows 上双击用浏览器全屏当屏保，Android 上装成原生 App 当床头钟。
 
-![效果图](assets/img1.png)
+## 概览
 
-## 文件
+### 两个平台
 
-| 文件 | 说明 |
+| 平台 | 产物 | 构建方式 | 说明 |
+|---|---|---|---|
+| Windows | `windows/Output/Fliqlo-Setup-*.exe` | Inno Setup 编译 `windows/Fliqlo.iss` | [windows/README.md](windows/README.md) |
+| Android | `app-debug.apk`（约 0.9 MB） | Gradle / Android Studio | [android/README.md](android/README.md) |
+
+两个平台共用同一份页面 `web/fliqlo.html`，差别只在打包方式：Windows 用浏览器打开它，
+Android 把它打进 APK 的 assets 交给 WebView 加载。所以**改页面只需要改一个文件**。
+
+### 目录结构
+
+规则只有一条：**`web/` 放两个平台共享的页面源，每个平台一个目录放自己的构建输入、文档和产物。**
+
+```
+FliqloScr/
+├─ README.md                本文件：项目总览
+├─ docs/                    screenshot.png（页面实拍图）
+├─ Fliqlo.ico               图标源（Windows 直接用；Android 的图标由它转出 PNG）
+├─ web/
+│  └─ fliqlo.html           唯一可编辑源，两个平台都从这里取
+├─ windows/
+│  ├─ README.md             Windows 版说明
+│  ├─ Fliqlo.iss            安装包脚本，引用 ..\web\fliqlo.html 与 ..\Fliqlo.ico
+│  └─ Output/               编译产物（Fliqlo-Setup-*.exe）
+└─ android/
+   ├─ README.md             Android 版说明
+   ├─ docs/                 竖屏 / 横屏渲染预览图
+   ├─ app/                  标准 Gradle 工程
+   └─ tools/                页面同步脚本
+```
+
+**文档图片的放法**：每个 README 用自己旁边的 `docs/`，相对路径引用（`docs/xxx.png`），
+不搞根目录统一存放。这样任何一份 README 连同配图被单独复制或拆成独立仓库时都不会断图。
+也不用 `assets/` 这个名字——Android 的 `app/src/main/assets/` 是打包进 APK 的运行时资源，
+同名不同义，容易误伤。
+
+
+### 生成物
+
+`android/` 里有**从 `web/` 生成的副本**，它不是第二份真源：
+
+| 生成物 | 由谁生成 |
 |---|---|
-| `fliqlo.html` | 主页面，单文件（CSS / JS / WOFF2 字体全部内联），双击即可打开 |
-| `assets/img1.png` | README 效果图 |
-| `Fliqlo.ico` | 安装包与快捷方式图标 |
-| `installer/Fliqlo.iss` | Inno Setup 安装脚本 |
+| `android/app/src/main/assets/index.html` | `python android/tools/sync_asset.py` |
+| `android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png` | 手工从 `Fliqlo.ico` 提取的 256px 图层 |
+
+`windows/` 不存在副本：`.iss` 安装时直接引用 `..\web\fliqlo.html`（`Source: "..\web\{#MyAppFileName}"`），
+所以 Windows 包不用同步。
 
 ## 功能
 
@@ -23,39 +67,21 @@
 - 零外部请求：字体是 base64 内嵌，CSS/JS 全在一个文件里，不联网
 - 翻页动画沿用原版：165ms 的 CSS 3D 翻转
 
-## 使用
+![实际效果：1600×900 视口下的渲染](docs/screenshot.png)
 
-1. 双击 `fliqlo.html`（默认浏览器打开）
-2. 按 **F11** 全屏；再按一次退出
-3. 设置栏在屏幕底部：移动鼠标出现，停 3 秒自动隐藏；改动即时生效并记在浏览器里
-4. 想临时固定形态：`fliqlo.html?ss=0`（时:分）或 `?ss=1`（时:分:秒），只对本次打开生效
+## 实现要点
 
-> 双击打开的是普通标签页（带地址栏），F11 之后就是纯时钟；鼠标移动、点击都不会让它消失。
+### 对原版的三处适配
 
-## 安装包
+原版页面为 WebView2 宿主设计，靠 `window.chrome.webview.postMessage` 与宿主通信；
+在普通浏览器里运行需要做三处适配，文件中分别以 `PATCH1` / `PATCH2` / `PATCH3` 标注，
+升级原版时搜索这三个词即可定位：
 
-脚本 `installer/Fliqlo.iss`，用 Inno Setup 6.6.1 编译：
-
-```powershell
-& "D:\Inno Setup 6.6.1\ISCC.exe" installer\Fliqlo.iss
-```
-
-- 产物：`installer\Output\Fliqlo-Setup-1.6.1.exe`
-- 安装位置：`%LOCALAPPDATA%\Programs\Fliqlo`（每用户安装，不需要管理员）
-- 快捷方式：桌面 / 开始菜单，名称 **Fliqlo**，图标 `Fliqlo.ico`（安装向导里「创建桌面快捷方式」默认勾选）
-- 卸载：删除安装目录和快捷方式；浏览器 localStorage 里的设置不会动
-
-## 实现说明
-
-### 为什么原版不能直接双击
-
-原版页面跑在 WebView2 里，靠 `window.chrome.webview.postMessage` 和宿主通信。用 `file://` 打开时
-`location.hostname` 是空串，而 Chrome/Edge 又确实有 `window.chrome` 对象，`isChrome` 被误判成 `true`，
-接着访问不存在的 `window.chrome.webview.addEventListener` 抛 TypeError，整段脚本中断 → 只剩黑屏。
-
-修补了 3 处：`isChrome` 改判为“必须存在 `chrome.webview`”、`appStorage` 的 `postMessage`/`addEventListener`
-加存在性检查、`isConfig` 直接置真（设置栏常开）。修补后走浏览器自己的 `localStorage`。
-三处在文件里分别以 `PATCH1` / `PATCH2` / `PATCH3` 标注，升级原版时搜这三个词即可定位。
+- **PATCH1**：宿主检测改为「存在 `chrome.webview` 才视为 WebView2 宿主」，
+  浏览器环境因此走浏览器自己的 `localStorage`
+- **PATCH2**：与宿主通信的 `postMessage` / `addEventListener` 加存在性检查，
+  在无宿主的环境下静默跳过
+- **PATCH3**：设置栏常开——浏览器里没有宿主的「鼠标不动才显示」事件
 
 ### 显秒是怎么做的
 
@@ -66,11 +92,6 @@
 秒卡由一段独立脚本按 175ms 定时器驱动，复用原版 `act/transform` 与 `fadein/fadeout1` 的 class 流程，
 完全不碰原版时/分逻辑。切换格式后会把 `dsptf` 置空，强制小时卡立即按新格式重绘——
 原版这里要等到下一个整点才刷新。
-
-### 兼容性
-
-- 在 Edge（150+）上实测渲染与切换均正常；Chrome 同内核，理论一致
-- Firefox 没有 `window.chrome`，`isChrome` 恒为 false，理论上同样可用（未实测）
 
 ## 设置项
 
@@ -88,5 +109,4 @@
 ## 注意
 
 - 网页无法阻止系统按电源计划关闭显示器或进入睡眠；要常亮请把“关闭屏幕/睡眠”设为“从不”
-- 全屏下光标默认可见；想隐藏可以另存一份，把 CSS 里的 `cursor:default` 改成 `cursor:none`
-- 这是非官方重打包：页面与字体的版权归原作者 Yuji Adachi / 9031(https://fliqlo.com/)
+- 这是非官方重打包：页面与字体的版权归原作者 Yuji Adachi / 9031（https://fliqlo.com/），安装包仅供自用
